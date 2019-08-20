@@ -31,9 +31,11 @@
   "dependencies": {
     "base-model-jh": "^1.2.5",
     "base-util-jh": "^1.2.4",
-    "device-client-controller-jh": "^0.2.1",
+    "bluebird": "^3.5.5",
     "device-client-model-jh": "^0.1.7",
+    "event-to-promise": "^0.8.0",
     "lodash": "^4.17.15",
-    "node-cron": "^2.0.3"
+    "node-cron": "^2.0.3",
+    "serialport": "^7.1.5"
   }
 }

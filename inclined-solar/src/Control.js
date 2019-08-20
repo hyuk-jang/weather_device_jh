@@ -1,6 +1,6 @@
 const { BU } = require('base-util-jh');
 
-const AbstDeviceClient = require('../../../../../../../module/device-client-controller-jh');
+const AbstDeviceClient = require('../../../device-client-controller-jh');
 const Model = require('./Model');
 
 const mainConfig = require('./config');
@@ -43,23 +43,19 @@ class Control extends AbstDeviceClient {
   // Cron 구동시킬 시간
   runDeviceInquiryScheduler() {
     BU.CLI('runCronDiscoveryRegularDevice');
-    try {
-      if (this.setInterval !== null) {
-        // BU.CLI('Stop')
-        clearInterval(this.setInterval);
-      }
-
-      // 3초 마다 데이터 수신 확인
-      this.setInterval = setInterval(() => {
-        this.inquiryDevice();
-      }, 3000);
-
-      this.inquiryDevice();
-
-      return true;
-    } catch (error) {
-      throw error;
+    if (this.setInterval !== null) {
+      // BU.CLI('Stop')
+      clearInterval(this.setInterval);
     }
+
+    // 3초 마다 데이터 수신 확인
+    this.setInterval = setInterval(() => {
+      this.inquiryDevice();
+    }, 3000);
+
+    this.inquiryDevice();
+
+    return true;
   }
 
   /** 경사 일사량 센서로 데이터를 요청하는 명령 발송 */

@@ -1,11 +1,10 @@
 const _ = require('lodash');
 
-// const {BU, CU} = require('../../../../../module/base-util-jh');
 const { BU, CU } = require('base-util-jh');
 
 const Control = require('./Control');
 
-const { BaseModel } = require('../../../../../../../module/device-protocol-converter-jh');
+const { BaseModel } = require('../../../device-protocol-converter-jh');
 
 const { BASE_MODEL } = BaseModel.Weathercast;
 

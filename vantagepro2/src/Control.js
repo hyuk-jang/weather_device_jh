@@ -6,10 +6,10 @@ const Model = require('./Model');
 const mainConfig = require('./config');
 
 // const {AbstConverter, controlFormat} = require('../../../../../../module/device-protocol-converter-jh');
-const { AbstConverter, BaseModel } = require('../../../../../../../module/device-protocol-converter-jh');
+const { AbstConverter, BaseModel } = require('../../../device-protocol-converter-jh');
 // const {AbstConverter} = require('device-protocol-converter-jh');
 
-const { dccFlagModel } = require('../../../../../../../module/default-intelligence');
+const { dccFlagModel } = require('../../../default-intelligence');
 
 const Serial = require('./DeviceClient/Serial');
 
@@ -93,22 +93,18 @@ class Control {
 
   // Cron 구동시킬 시간
   runDeviceInquiryScheduler() {
-    try {
-      if (this.setInterval !== null) {
-        // BU.CLI('Stop')
-        clearInterval(this.setInterval);
-      }
-      // 3초마다 데이터 수신 확인 (LOOP 명령은 2초 마다 전송하기 때문에 충분)
-      this.setInterval = setInterval(() => {
-        this.inquiryDevice();
-      }, 3000);
-
-      this.inquiryDevice();
-
-      return true;
-    } catch (error) {
-      throw error;
+    if (this.setInterval !== null) {
+      // BU.CLI('Stop')
+      clearInterval(this.setInterval);
     }
+    // 3초마다 데이터 수신 확인 (LOOP 명령은 2초 마다 전송하기 때문에 충분)
+    this.setInterval = setInterval(() => {
+      this.inquiryDevice();
+    }, 3000);
+
+    this.inquiryDevice();
+
+    return true;
   }
 
   /**

@@ -34,21 +34,17 @@ class Control {
 
   /** VantagePro2와 SmInfraredSensor 데이터를 가져올 스케줄러 */
   runScheduler() {
-    try {
-      if (this.scheduler !== null) {
-        // BU.CLI('Stop')
-        this.scheduler.stop();
-      }
-      // 1분마다 요청
-      this.cronScheduler = cron.schedule('* * * * *', () => {
-        this.model.getWeatherDeviceData(new Date());
-      });
-
-      this.cronScheduler.start();
-      return true;
-    } catch (error) {
-      throw error;
+    if (this.scheduler !== null) {
+      // BU.CLI('Stop')
+      this.scheduler.stop();
     }
+    // 1분마다 요청
+    this.cronScheduler = cron.schedule('* * * * *', () => {
+      this.model.getWeatherDeviceData(new Date());
+    });
+
+    this.cronScheduler.start();
+    return true;
   }
 
   /**
