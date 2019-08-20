@@ -1,0 +1,39 @@
+{
+  "name": "jsdoc",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node_modules/.bin/mocha -w",
+    "start": "nodemon index.js",
+    "generate-docs": "node_modules/.bin/jsdoc -c jsdoc.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/lodash": "^4.14.137",
+    "docdash": "^1.1.1",
+    "dotenv": "^8.1.0",
+    "eslint": "^6.2.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "jsdoc": "^3.6.3",
+    "prettier": "^1.18.2"
+  },
+  "dependencies": {
+    "base-model-jh": "^1.2.5",
+    "base-util-jh": "^1.2.4",
+    "device-client-controller-jh": "^0.2.1",
+    "device-client-model-jh": "^0.1.7",
+    "lodash": "^4.17.15",
+    "node-cron": "^2.0.3"
+  }
+}
