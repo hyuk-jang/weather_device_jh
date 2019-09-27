@@ -20,7 +20,7 @@ const config = {
       connect_info: {
         type: 'serial',
         baudRate: 19200,
-        port: 'COM3',
+        port: 'COM5',
       },
       // connect_info: {
       //   type: 'socket',

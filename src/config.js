@@ -3,11 +3,11 @@ require('dotenv').config();
 module.exports = {
   current: {
     dbInfo: {
-      host: process.env.DB_UPSAS_HOST,
-      user: process.env.DB_UPSAS_USER,
-      port: process.env.DB_UPSAS_PORT,
-      password: process.env.DB_UPSAS_PW,
-      database: process.env.DB_UPSAS_DB,
+      host: process.env.PJ_DB_HOST,
+      user: process.env.PJ_DB_USER,
+      port: process.env.PJ_DB_PORT,
+      password: process.env.PJ_DB_PW,
+      database: process.env.PJ_DB_DB,
     },
     controllerInfo: {
       main_seq: 1,
@@ -60,7 +60,7 @@ module.exports = {
         connect_info: {
           type: 'serial',
           baudRate: 19200,
-          port: 'COM3',
+          port: 'COM5',
         },
         // connect_info: {
         //   type: 'socket',

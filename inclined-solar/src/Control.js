@@ -35,7 +35,7 @@ class Control extends AbstDeviceClient {
       config: this.config.deviceInfo,
       data: this.model.deviceData,
       // systemErrorList: [{code: 'new Code22223', msg: '에러 테스트 메시지22', occur_date: new Date() }],
-      systemErrorList: this.systemErrorList,
+      systemErrorList: [],
       troubleList: [],
     };
   }
