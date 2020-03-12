@@ -46,7 +46,7 @@ module.exports = {
         target_name: 'Davis Vantage Pro2',
         target_category: 'weather',
         protocol_info: {
-          mainCategory: 'weathercast',
+          mainCategory: 'Weathercast',
           subCategory: 'vantagepro2',
           protocolOptionInfo: {
             hasTrackingData: true,
@@ -89,7 +89,7 @@ module.exports = {
         hasTransferCommand: true,
       },
       protocol_info: {
-        mainCategory: 'weathercast',
+        mainCategory: 'Weathercast',
         subCategory: 'vantagepro2',
         protocolOptionInfo: {
           hasTrackingData: false,

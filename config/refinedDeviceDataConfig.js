@@ -58,13 +58,13 @@ module.exports = [
           fromKey: 'RainRate',
           toKey: 'rain_h',
           calculate: 1,
-          toFixed: 0,
+          toFixed: 1,
         },
         {
           fromKey: 'DayRain',
           toKey: 'rain_d',
           calculate: 1,
-          toFixed: 0,
+          toFixed: 1,
         },
         {
           fromKey: 'SolarRadiation',
