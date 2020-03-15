@@ -6,7 +6,7 @@ const config = {
       target_name: 'Davis Vantage Pro2',
       target_category: 'weather',
       protocol_info: {
-        mainCategory: 'weathercast',
+        mainCategory: 'Weathercast',
         subCategory: 'vantagepro2',
         protocolOptionInfo: {
           hasTrackingData: true,
@@ -20,7 +20,7 @@ const config = {
       connect_info: {
         type: 'serial',
         baudRate: 19200,
-        port: 'COM5',
+        port: 'COM3',
       },
       // connect_info: {
       //   type: 'socket',

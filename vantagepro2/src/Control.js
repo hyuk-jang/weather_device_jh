@@ -43,7 +43,6 @@ class Control {
       await Promise.delay(100);
       this.serialClient = new Serial(this.config.deviceInfo, this.config.deviceInfo.connect_info);
       this.serialClient.attach(this);
-      await this.serialClient.connect();
     } else {
       BU.CLI('생성기 호출', this.id);
       require('./dummy')(this);

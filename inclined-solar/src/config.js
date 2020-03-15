@@ -20,7 +20,7 @@ const config = {
         hasTransferCommand: true,
       },
       protocol_info: {
-        mainCategory: 'weathercast',
+        mainCategory: 'Weathercast',
         subCategory: 'vantagepro2',
         protocolOptionInfo: {
           hasTrackingData: false,
@@ -35,7 +35,7 @@ const config = {
         type: 'modbus',
         subType: 'rtu',
         baudRate: 9600,
-        port: 'COM19',
+        port: 'COM18',
       },
       // connect_info: {
       //   type: 'modbus',

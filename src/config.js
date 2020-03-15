@@ -10,7 +10,7 @@ module.exports = {
       database: process.env.PJ_DB_DB,
     },
     controllerInfo: {
-      main_seq: 1,
+      main_seq: Number(process.env.PJ_MAIN_SEQ) || 1,
       target_id: 'wds_01',
       target_category: 'weatherDevice',
       data_table_name: 'weather_device_data',
@@ -60,7 +60,7 @@ module.exports = {
         connect_info: {
           type: 'serial',
           baudRate: 19200,
-          port: 'COM5',
+          port: 'COM3',
         },
         // connect_info: {
         //   type: 'socket',
