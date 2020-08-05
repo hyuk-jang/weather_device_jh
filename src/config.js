@@ -60,7 +60,7 @@ module.exports = {
         connect_info: {
           type: 'serial',
           baudRate: 19200,
-          port: 'COM3',
+          port: process.env.VANTAGE_PORT,
         },
         // connect_info: {
         //   type: 'socket',
@@ -104,7 +104,7 @@ module.exports = {
         type: 'modbus',
         subType: 'rtu',
         baudRate: 9600,
-        port: 'COM19',
+        port: process.env.INCLINED_SOLAR_PORT,
       },
       // connect_info: {
       //   type: 'modbus',
