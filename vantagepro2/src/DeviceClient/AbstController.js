@@ -91,7 +91,7 @@ class AbstController {
 
   notifyEvent(eventName) {
     BU.CLI('notifyEvent', eventName);
-    this.observers.forEach(observer => {
+    this.observers.forEach((observer) => {
       observer.onEvent(eventName);
     });
   }
@@ -144,7 +144,7 @@ class AbstController {
       `./log/vantagePro2/${BU.convertDateToText(new Date(), '', 2)}.txt`,
       `${data.toString('hex')}`,
     );
-    this.observers.forEach(observer => {
+    this.observers.forEach((observer) => {
       observer.onData(data);
     });
   }

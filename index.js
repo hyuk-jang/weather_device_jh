@@ -1,4 +1,7 @@
+const dotenv = require('dotenv');
+
 const Control = require('./src/Control');
+const config = require('./src/config');
 
 module.exports = Control;
 
@@ -6,7 +9,20 @@ module.exports = Control;
 if (require !== undefined && require.main === module) {
   console.log('__main__');
 
-  const config = require('./src/config');
+  let path;
+  switch (process.env.NODE_ENV) {
+    case 'development':
+      path = `${process.cwd()}/.env`;
+      break;
+    case 'production':
+      path = `${process.cwd()}/.env`;
+      break;
+    default:
+      path = `${process.cwd()}/.env`;
+      break;
+  }
+
+  dotenv.config({ path });
 
   const control = new Control(config);
   control.init();

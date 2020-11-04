@@ -6,36 +6,47 @@
   "directories": {
     "test": "test"
   },
+  "bin": {
+    "app": "./index.js"
+  },
+  "pkg": {
+    "assets": []
+  },
   "scripts": {
     "test": "node_modules/.bin/mocha -w",
     "start": "nodemon index.js",
-    "generate-docs": "node_modules/.bin/jsdoc -c jsdoc.json"
+    "generate-docs": "node_modules/.bin/jsdoc -c jsdoc.json",
+    "build": "pkg . --out-path dist",
+    "build:win": "pkg . --out-path dist --targets node8-win-x64",
+    "build:linux": "pkg . --out-path dist --targets node8-linux-x64",
+    "build:macos": "pkg . --out-path dist --targets node8-macos-x64"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/lodash": "^4.14.137",
-    "docdash": "^1.1.1",
-    "dotenv": "^8.1.0",
-    "eslint": "^6.2.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-config-prettier": "^6.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-react": "^7.14.3",
-    "jsdoc": "^3.6.3",
-    "prettier": "^1.18.2"
+    "@types/lodash": "^4.14.164",
+    "chai": "^4.2.0",
+    "docdash": "^1.2.0",
+    "eslint": "^7.12.1",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "jsdoc": "^3.6.6",
+    "mocha": "^8.2.1",
+    "prettier": "^2.1.2"
   },
   "dependencies": {
-    "base-model-jh": "^1.2.5",
-    "base-util-jh": "^1.2.4",
-    "bluebird": "^3.5.5",
-    "device-client-model-jh": "^0.1.7",
+    "base-model-jh": "^1.2.9",
+    "base-util-jh": "^1.2.9",
+    "bluebird": "^3.7.2",
+    "cron": "^1.8.2",
+    "serialport": "^9.0.2",
+    "dotenv": "^8.2.0",
     "event-to-promise": "^0.8.0",
-    "lodash": "^4.17.15",
-    "node-cron": "^2.0.3",
-    "serialport": "^7.1.5"
+    "lodash": "^4.17.20"
   }
 }

@@ -41,10 +41,13 @@ class Control {
     if (!this.config.hasDev) {
       // 라이브러리 로딩까지 초기 구동 시간을 부여
       await Promise.delay(100);
-      this.serialClient = new Serial(this.config.deviceInfo, this.config.deviceInfo.connect_info);
+      this.serialClient = new Serial(
+        this.config.deviceInfo,
+        this.config.deviceInfo.connect_info,
+      );
       this.serialClient.attach(this);
     } else {
-      BU.CLI('생성기 호출', this.id);
+      // BU.CLI('생성기 호출', this.id);
       require('./dummy')(this);
     }
     this.converter.setProtocolConverter(this.config.deviceInfo);

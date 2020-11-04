@@ -1,4 +1,4 @@
-const cron = require('node-cron');
+const cron = require('cron');
 
 const SmInfrared = require('../sm-infrared');
 const Vantagepro2 = require('../vantagepro2');
@@ -19,12 +19,12 @@ class Control {
     this.vantagepro2 = new Vantagepro2(config.vantagepro2);
     this.inclinedSolar = new InclinedSolar(config.inclinedSolar);
 
-    this.scheduler = null;
+    this.cronScheduler = null;
   }
 
   /** 기상 장치 컨트롤러 객체를 초기화 하고 스케줄러를 호출. (장치 접속 및 프로그램 구동) */
   init() {
-    // TODO 적외선 센서 달면 활성화 할 것
+    // TODO: 적외선 센서 달면 활성화 할 것
     // this.smInfrared.init();
     this.vantagepro2.init();
     // this.inclinedSolar.init();
@@ -34,16 +34,20 @@ class Control {
 
   /** VantagePro2와 SmInfraredSensor 데이터를 가져올 스케줄러 */
   runScheduler() {
-    if (this.scheduler !== null) {
+    if (this.cronScheduler !== null) {
       // BU.CLI('Stop')
-      this.scheduler.stop();
+      this.cronScheduler.stop();
     }
     // 1분마다 요청
-    this.cronScheduler = cron.schedule('* * * * *', () => {
-      this.model.getWeatherDeviceData(new Date());
-    });
+    this.cronScheduler = new cron.CronJob(
+      process.env.PJ_CRON_FORMAT || '0 * * * * *',
+      () => {
+        this.model.getWeatherDeviceData(new Date());
+      },
+      null,
+      true,
+    );
 
-    this.cronScheduler.start();
     return true;
   }
 
