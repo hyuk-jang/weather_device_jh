@@ -44,9 +44,10 @@
     "base-util-jh": "^1.2.9",
     "bluebird": "^3.7.2",
     "cron": "^1.8.2",
-    "serialport": "^9.0.2",
+    "device-client-model-jh": "^0.1.7",
     "dotenv": "^8.2.0",
     "event-to-promise": "^0.8.0",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+    "serialport": "^9.0.2"
   }
 }
