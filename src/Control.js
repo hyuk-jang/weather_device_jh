@@ -2,7 +2,6 @@ const cron = require('cron');
 
 const SmInfrared = require('../sm-infrared');
 const Vantagepro2 = require('../vantagepro2');
-const InclinedSolar = require('../inclined-solar');
 
 const Model = require('./Model');
 
@@ -17,7 +16,6 @@ class Control {
 
     this.smInfrared = new SmInfrared(config.smInfrared);
     this.vantagepro2 = new Vantagepro2(config.vantagepro2);
-    this.inclinedSolar = new InclinedSolar(config.inclinedSolar);
 
     this.cronScheduler = null;
   }
@@ -27,7 +25,6 @@ class Control {
     // TODO: 적외선 센서 달면 활성화 할 것
     // this.smInfrared.init();
     this.vantagepro2.init();
-    // this.inclinedSolar.init();
 
     this.runScheduler();
   }

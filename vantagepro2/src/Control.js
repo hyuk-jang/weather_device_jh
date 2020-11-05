@@ -1,11 +1,9 @@
 const Promise = require('bluebird');
 const { BU } = require('base-util-jh');
-// const AbstDeviceClient = require('device-client-controller-jh');
 const Model = require('./Model');
 
 const mainConfig = require('./config');
 
-// const {AbstConverter, controlFormat} = require('../../../../../../module/device-protocol-converter-jh');
 const { AbstConverter, BaseModel } = require('../../../device-protocol-converter-jh');
 // const {AbstConverter} = require('device-protocol-converter-jh');
 
