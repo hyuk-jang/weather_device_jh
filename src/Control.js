@@ -9,10 +9,16 @@ const mainConfig = require('./config');
 
 class Control {
   /** @param {mainConfig} config */
-  constructor(config) {
+
+  /**
+   *
+   * @param {mainConfig} config
+   * @param {mainConfig} refineConfig
+   */
+  constructor(config, refineConfig) {
     this.config = config.current || mainConfig.current;
 
-    this.model = new Model(this);
+    this.model = new Model(this, refineConfig);
 
     this.smInfrared = new SmInfrared(config.smInfrared);
     this.vantagepro2 = new Vantagepro2(config.vantagepro2);

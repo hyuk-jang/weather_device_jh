@@ -4,15 +4,14 @@ const { BU, CU } = require('base-util-jh');
 const AbstDeviceClientModel = require('device-client-model-jh');
 const Control = require('./Control');
 
-const refinedDeviceDataConfig = require('../config/refinedDeviceDataConfig');
-
 class Model extends AbstDeviceClientModel {
   /**
    *
    * @param {Control} controller
+   * @param {Object} refineConfig
    */
-  constructor(controller) {
-    super(refinedDeviceDataConfig);
+  constructor(controller, refineConfig) {
+    super(refineConfig);
     this.controller = controller;
     this.dataStroageConfig = this.controller.config.controllerInfo;
     this.deviceCategory = this.dataStroageConfig.target_category;
@@ -41,7 +40,7 @@ class Model extends AbstDeviceClientModel {
    * @param {Date} measureDate
    */
   async getWeatherDeviceData(measureDate) {
-    BU.CLI('getWeatherDeviceData');
+    // BU.CLI('getWeatherDeviceData');
 
     // FIXME: cron 스케줄러가 중복 실행되는 버그가 해결되기 전까지 사용
     if (
@@ -113,7 +112,7 @@ class Model extends AbstDeviceClientModel {
       measureDate,
       true,
     );
-    BU.CLI(convertDataInfo.insertDataList);
+    // BU.CLI(convertDataInfo);
 
     const resultSaveToDB = await this.saveDataToDB(this.deviceCategory);
     // BU.CLI(resultSaveToDB);

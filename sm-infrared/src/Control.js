@@ -5,7 +5,7 @@ const Model = require('./Model');
 const mainConfig = require('./config');
 const Serial = require('./DeviceClient/Serial');
 
-require('../../../default-intelligence');
+require('default-intelligence');
 
 class Control {
   /** @param {mainConfig} config */
@@ -21,7 +21,10 @@ class Control {
    */
   async init() {
     if (!this.config.hasDev) {
-      this.serialClient = new Serial(this.config.deviceInfo, this.config.deviceInfo.connect_info);
+      this.serialClient = new Serial(
+        this.config.deviceInfo,
+        this.config.deviceInfo.connect_info,
+      );
       this.serialClient.attach(this);
       await this.serialClient.connect();
     } else {

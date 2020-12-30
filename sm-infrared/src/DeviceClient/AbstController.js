@@ -3,7 +3,7 @@ const _ = require('lodash');
 
 const { BU, CU } = require('base-util-jh');
 
-const { definedControlEvent } = require('../../../../default-intelligence').dccFlagModel;
+const { definedControlEvent } = require('default-intelligence').dccFlagModel;
 
 class AbstController {
   constructor() {

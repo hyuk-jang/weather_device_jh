@@ -40,7 +40,6 @@ module.exports = {
   },
   vantagepro2: {
     current: {
-      hasDev: false, // 장치 연결을 실제로 하는지 여부
       deviceInfo: {
         target_id: 'VantagePro_1',
         target_name: 'Davis Vantage Pro2',
@@ -54,18 +53,14 @@ module.exports = {
         },
         controlInfo: {
           hasErrorHandling: false,
-          hasOneAndOne: true,
           hasReconnect: true,
         },
         connect_info: {
-          type: 'serial',
-          baudRate: 19200,
+          type: process.env.VANTAGE_TYPE || 'serial',
+          host: process.env.VANTAGE_HOST || 'localhost',
           port: process.env.VANTAGE_PORT,
+          baudRate: 19200,
         },
-        // connect_info: {
-        //   type: 'socket',
-        //   port: 9000
-        // },
       },
     },
   },

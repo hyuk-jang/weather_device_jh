@@ -1,27 +1,43 @@
-const Promise = require('bluebird');
+const _ = require('lodash');
+const eventToPromise = require('event-to-promise');
+const EventEmitter = require('events');
+
 const { BU } = require('base-util-jh');
+
+const AbstController = require('device-client-controller-jh');
+const { dccFlagModel } = require('default-intelligence');
+
+const {
+  AbstConverter,
+  BaseModel: { Weathercast },
+} = require('device-protocol-converter-jh');
+
 const Model = require('./Model');
 
 const mainConfig = require('./config');
 
-const { AbstConverter, BaseModel } = require('../../../device-protocol-converter-jh');
 // const {AbstConverter} = require('device-protocol-converter-jh');
 
-const { dccFlagModel } = require('../../../default-intelligence');
-
-const Serial = require('./DeviceClient/Serial');
-
-class Control {
+class Control extends EventEmitter {
   /** @param {mainConfig} config */
-  constructor(config) {
-    this.config = config.current || mainConfig.current;
+  constructor(config = mainConfig) {
+    super();
 
-    this.converter = new AbstConverter(this.config.deviceInfo.protocol_info);
-    this.baseModel = new BaseModel.Weathercast(this.config.deviceInfo.protocol_info);
+    const {
+      current: {
+        deviceInfo,
+        deviceInfo: { protocol_info: protocolInfo },
+      },
+    } = config;
 
-    this.model = new Model(this);
-    /** 주기적으로 LOOP 명령을 내릴 시간 인터벌 */
-    this.executeCommandInterval = null;
+    this.config = config.current;
+
+    this.deviceInfo = deviceInfo;
+
+    this.converter = new AbstConverter(protocolInfo);
+    this.converter.setProtocolConverter();
+
+    this.baseModel = new Weathercast(protocolInfo);
 
     this.setInterval = null;
     this.hasReceivedData = false;
@@ -36,20 +52,43 @@ class Control {
    * 개발 버젼일 경우 장치 연결 수립을 하지 않고 가상 데이터를 생성
    */
   async init() {
-    if (!this.config.hasDev) {
-      // 라이브러리 로딩까지 초기 구동 시간을 부여
-      await Promise.delay(100);
-      this.serialClient = new Serial(
-        this.config.deviceInfo,
-        this.config.deviceInfo.connect_info,
-      );
-      this.serialClient.attach(this);
-    } else {
-      // BU.CLI('생성기 호출', this.id);
-      require('./dummy')(this);
+    // 라이브러리 로딩까지 초기 구동 시간을 부여
+    // 모델 선언
+    this.model = new Model(this);
+
+    await this.model.init(Weathercast.BASE_MODEL);
+
+    try {
+      const abstController = new AbstController();
+      this.definedControlEvent = abstController.definedControlEvent;
+      const { CONNECT, DISCONNECT } = this.definedControlEvent;
+
+      this.deviceController = abstController.setDeviceController(this.deviceInfo);
+      this.deviceController.attach(this);
+
+      // BU.CLI(this.deviceInfo);
+
+      // 이미 접속 중인 객체가 있다면
+      if (!_.isEmpty(this.deviceController.client)) {
+        return this;
+      }
+
+      // 장치 접속 관리자에게 접속 요청
+      this.deviceController.doConnect();
+
+      // Connect 결과 이벤트가 발생할때까지 대기
+      await eventToPromise.multi(this, [CONNECT], [DISCONNECT]);
+
+      return this;
+    } catch (error) {
+      BU.error(error);
+      // 초기화에 실패할 경우에는 에러 처리
+      if (error instanceof ReferenceError) {
+        throw error;
+      }
+      // Controller 반환
+      return this;
     }
-    this.converter.setProtocolConverter(this.config.deviceInfo);
-    return true;
   }
 
   /**
@@ -57,13 +96,21 @@ class Control {
    * @param {string} eventName 'dcConnect' 연결, 'dcClose' 닫힘, 'dcError' 에러
    */
   async onEvent(eventName) {
+    BU.log('Vantage Pro', eventName);
+    const { CONNECT, DISCONNECT } = this.definedControlEvent;
+
     switch (eventName) {
-      case dccFlagModel.definedControlEvent.CONNECT:
-        await this.serialClient.write(this.baseModel.device.DEFAULT.COMMAND.WAKEUP);
+      case CONNECT:
+        this.emit(CONNECT);
+
+        await this.deviceController.write(this.baseModel.device.DEFAULT.COMMAND.WAKEUP);
+
         // 데이터 수신 체크 크론 동작
         this.runDeviceInquiryScheduler();
         break;
-      case dccFlagModel.definedControlEvent.DISCONNECT:
+      case DISCONNECT:
+        this.emit(DISCONNECT);
+        // this.deviceController.connect();
         break;
       default:
         break;
@@ -72,22 +119,30 @@ class Control {
 
   /**
    * 장치에서 데이터가 수신되었을 경우 해당 장치의 데이터를 수신할 Commander에게 전송
-   * @param {*} data
+   * @param {*} bufData
    */
-  onData(data) {
-    const resultParsing = this.converter.parsingUpdateData({ data });
-    // BU.CLI(resultParsing);
-    if (resultParsing.eventCode === dccFlagModel.definedCommanderResponse.DONE) {
+  onData(bufData) {
+    // BU.log('onData');
+    const {
+      definedCommanderResponse: { DONE, WAIT },
+    } = dccFlagModel;
+
+    const logPath = `./log/${BU.convertDateToText(new Date(), '', 2)}.log`;
+    BU.appendFile(logPath, `onVantagePro: ${Buffer.from(bufData).toString('hex')}`);
+
+    const { data, eventCode } = this.converter.parsingUpdateData({ data: bufData });
+
+    // 데이터가 완성 안되었을 경우 대기
+    if (eventCode === WAIT) {
+      return;
+    }
+
+    if (eventCode === DONE) {
       // 정상적인 데이터가 들어왔다고 처리
       this.hasReceivedData = true;
-      this.model.onData(resultParsing.data);
-      // BU.CLI(
-      //   'SolarRadiation',
-      //   this.getDeviceOperationInfo().data[BaseModel.Weathercast.BASE_KEY.SolarRadiation],
-      // );
+      this.model.onData(data);
     } else {
       // BU.CLI(resultParsing)
-      // BU.logFile(JSON.stringify(resultParsing));
     }
   }
 
@@ -107,10 +162,15 @@ class Control {
     return true;
   }
 
+  updatedDcEventOnDevice(dcEvent) {
+    super.updatedDcEventOnDevice(dcEvent);
+  }
+
   /**
    * 데이터 탐색
    */
   async inquiryDevice() {
+    // BU.CLI(this.errorCount);
     // 정상적인 데이터가 들어왔을 경우
     if (this.hasReceivedData) {
       // 초기화
@@ -119,24 +179,33 @@ class Control {
     } else {
       this.errorCount += 1;
 
+      if (_.isEmpty(this.deviceController.client)) {
+        await this.deviceController.doConnect();
+        BU.CLI('Vantage Pro', 'connect');
+        return false;
+      }
+
       // 데이터가 2번 이상 들어오지 않는다면 문제가 있다고 판단
       if (this.errorCount === 2) {
         BU.CLI('vantagePro: ECOUNT:2, LOOP 요청');
-        await this.serialClient.write(this.baseModel.device.DEFAULT.COMMAND.LOOP);
-        BU.CLI('vantagePro: ECOUNT:2, LOOP 완료');
+        await this.deviceController.write(this.baseModel.device.DEFAULT.COMMAND.LOOP);
+        // BU.CLI('vantagePro: ECOUNT:2, LOOP 완료');
       } else if (this.errorCount === 4) {
         // 그래도 정상적인 데이터가 들어오지 않는다면
         BU.CLI('vantagePro: ECOUNT:4, LOOP_INDEX 요청');
-        await this.serialClient.write(this.baseModel.device.DEFAULT.COMMAND.LOOP_INDEX);
-        BU.CLI('vantagePro: ECOUNT:4, LOOP_INDEX 완료');
+        await this.deviceController.write(
+          this.baseModel.device.DEFAULT.COMMAND.LOOP_INDEX,
+        );
+        // BU.CLI('vantagePro: ECOUNT:4, LOOP_INDEX 완료');
       } else if (this.errorCount === 6) {
         // 통제할 수 없는 에러라면
         this.errorCount = 0; // 새롭게 시작
         BU.CLI('vantagePro: ECOUNT:6, disconnect 요청');
         // trackingDataBuffer 삭제
         this.converter.resetTrackingDataBuffer();
-        await this.serialClient.disconnect(); // 장치 재접속 요청
-        BU.CLI('vantagePro: ECOUNT:6, disconnect 완료');
+        await this.deviceController.disconnect(); // 장치 재접속 요청
+
+        BU.CLI('Vantage Pro', 'disconnect');
       } else {
         return false;
       }
@@ -148,8 +217,8 @@ class Control {
    */
   getDeviceOperationInfo() {
     return {
-      id: this.config.deviceInfo.target_id,
-      config: this.config.deviceInfo,
+      id: this.deviceInfo.target_id,
+      config: this.deviceInfo,
       data: this.model.deviceData,
       // systemErrorList: [{code: 'new Code2222', msg: '에러 테스트 메시지22', occur_date: new Date() }],
       systemErrorList: [],

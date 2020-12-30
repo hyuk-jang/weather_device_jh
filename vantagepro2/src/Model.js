@@ -1,39 +1,33 @@
-const _ = require('lodash');
+const moment = require('moment');
 
-const { BU, CU } = require('base-util-jh');
+const {
+  CU: { AverageStorage },
+  BU,
+} = require('base-util-jh');
 
-const Control = require('./Control');
+const { BaseModel } = require('device-protocol-converter-jh');
 
-const { BaseModel } = require('../../../device-protocol-converter-jh');
-
-const { BASE_MODEL } = BaseModel.Weathercast;
+const {
+  Weathercast: { BASE_MODEL },
+} = BaseModel;
 
 class Model {
   /**
-   * @param {Control} controller
+   * 저장소를 깨끗이 비우고 현재 값을 초기화 시킴
+   * @param {BASE_MODEL} baseModel
    */
-  constructor(controller) {
-    this.controller = controller;
-
-    this.deviceData = BASE_MODEL;
-
-    this.tempDeviceData = BASE_MODEL;
+  init(baseModel = BASE_MODEL) {
+    this.deviceData = baseModel;
 
     const averConfig = {
-      maxStorageNumber: 30, // 최대 저장 데이터 수
+      maxStorageNumber: 6, // 최대 저장 데이터 수
       keyList: Object.keys(this.deviceData),
+      isCenterAvg: 1,
     };
 
-    this.averageStorage = new CU.AverageStorage(averConfig);
-    this.averageStorage.hasCenterAverage = true;
-  }
+    this.averageStorage = new AverageStorage(averConfig);
 
-  /**
-   * 저장소를 깨끗이 비우고 현재 값을 초기화 시킴
-   */
-  init() {
     this.averageStorage.init();
-    this.deviceData = BASE_MODEL;
   }
 
   /**
@@ -48,6 +42,10 @@ class Model {
     weathercastData = this.averageStorage.onData(weathercastData);
 
     this.deviceData = weathercastData;
+
+    console.log('onVantagePro >>> ', moment().format('YY-MM-DD HH:mm:ss'));
+
+    console.dir(this.deviceData);
   }
 }
 
