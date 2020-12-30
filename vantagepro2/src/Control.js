@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const path = require('path');
 const eventToPromise = require('event-to-promise');
 const EventEmitter = require('events');
 
@@ -127,7 +128,12 @@ class Control extends EventEmitter {
       definedCommanderResponse: { DONE, WAIT },
     } = dccFlagModel;
 
-    const logPath = `./log/${BU.convertDateToText(new Date(), '', 2)}.log`;
+    const logPath = path.join(
+      process.cwd(),
+      'log',
+      `${BU.convertDateToText(new Date(), '', 2)}.log`,
+    );
+
     BU.appendFile(logPath, `onVantagePro: ${Buffer.from(bufData).toString('hex')}`);
 
     const { data, eventCode } = this.converter.parsingUpdateData({ data: bufData });

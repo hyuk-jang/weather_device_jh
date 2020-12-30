@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const moment = require('moment');
 
 const { BU, CU } = require('base-util-jh');
 const AbstDeviceClientModel = require('device-client-model-jh');
@@ -103,6 +104,9 @@ class Model extends AbstDeviceClientModel {
       this.controller.getDeviceOperationInfo(),
       this.deviceCategory,
     );
+
+    console.log('insert DB >>> ', moment().format('YY-MM-DD HH:mm:ss'));
+    console.dir(vantagepro2Data.data);
 
     // BU.CLIN(returnValue, 3);
 

@@ -45,7 +45,7 @@ class Model {
 
     console.log('onVantagePro >>> ', moment().format('YY-MM-DD HH:mm:ss'));
 
-    console.dir(this.deviceData);
+    // console.dir(this.deviceData);
   }
 }
 
