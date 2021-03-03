@@ -187,7 +187,7 @@ class Control extends EventEmitter {
 
       if (_.isEmpty(this.deviceController.client)) {
         await this.deviceController.doConnect();
-        BU.CLI('Vantage Pro', 'connect');
+        BU.CLI('Vantage Pro errCount', this.errorCount);
         return false;
       }
 
